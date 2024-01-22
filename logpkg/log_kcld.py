@@ -63,17 +63,17 @@ def log_to_file(logger):
     return decorator
 
 #Example usage
-if __name__ == "__main__":
-
-    # Set up a logger named "my_app"
-    logger = LogKCld()
-    #logger = setup_logger("my_app", log_file="../app.log")
-
-    # Apply the logpkg decorator to a function
-    @log_to_file(logger)
-    def add_numbers(a, b):
-        return a + b
-
-    # Call the decorated function
-    result = add_numbers(3, 5)
-    logger.info(f"Final result: {result}")
+# if __name__ == "__main__":
+#
+#     # Set up a logger named "my_app"
+#     logger = LogKCld()
+#     #logger = setup_logger("my_app", log_file="../app.log")
+#
+#     # Apply the logpkg decorator to a function
+#     @log_to_file(logger)
+#     def add_numbers(a, b):
+#         return a + b
+#
+#     # Call the decorated function
+#     result = add_numbers(3, 5)
+#     logger.info(f"Final result: {result}")
