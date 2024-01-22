@@ -1,0 +1,25 @@
+{
+    "database": {
+        "host": "localhost",
+        "port": 5432,
+        "username": "admin",
+        "password": "secret"
+    },
+    "api": {
+        "base_url": "https://api.example.com",
+        "timeout": 30
+    },
+    "logging": {
+        "level": "INFO",
+        "file_path": "/var/log/my_app.log"
+    },
+  "kafka": {
+  "bootstrap_servers": "krishnas-mbp.lan:9092",
+  "group_id": "your_consumer_group_id",
+  "host_topic": "your_kafka_topic",
+  "command_output_topic": "command_output_topic"
+},
+  "encryption": {
+    "key": "56ixMxYFTmxLfIh6q2dcxYph8kQF1sK8eghI3NHszsHOhh2oK7"
+  }
+}
