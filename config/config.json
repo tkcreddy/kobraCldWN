@@ -16,7 +16,7 @@
   "kafka": {
   "bootstrap_servers": "krishnas-mbp.lan:9092",
   "group_id": "your_consumer_group_id",
-  "host_topic": "your_kafka_topic",
+  "topic": "your_kafka_topic",
   "command_output_topic": "command_output_topic"
 },
   "encryption": {

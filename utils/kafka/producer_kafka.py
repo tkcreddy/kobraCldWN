@@ -1,4 +1,6 @@
+import logging
 import time
+from logpkg.log_kcld import log_to_file
 from kafka.producer import KafkaProducer
 from kafka.consumer import KafkaConsumer
 import json
@@ -15,12 +17,17 @@ def json_serializer(data):
     return json.dumps(data).encode("utf-8")
 
 class Producer:
+    @l
     def __init__(self,bootstrapserver,topic):
         self.bootstrap_servers=[bootstrapserver]
         #KafkaProducer()
         self.topic=topic
-        print(bootstrapserver)
-        self.producer=KafkaProducer(bootstrap_servers=self.bootstrap_servers)
+        try:
+           self.producer=KafkaProducer(bootstrap_servers=self.bootstrap_servers)
+        except Exception as err:
+            logging.ERROR("")
+            raise
+
 
     def send(self,data):
         self.producer.send(self.topic,data)

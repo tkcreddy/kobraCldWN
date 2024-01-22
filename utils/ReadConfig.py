@@ -1,5 +1,5 @@
 import json
-from logpkg.log_decorator import setup_logger,log_to_file
+#from logpkg.log_decorator import setup_logger,log_to_file
 #logger = setup_logger("my_app", log_file="app.log")
 class ReadConfig:
     def __init__(self, file_path):

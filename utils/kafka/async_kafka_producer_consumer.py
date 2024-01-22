@@ -26,7 +26,7 @@ class AsyncKafkaProducerWithState:
         finally:
             await self.producer.stop()
 
-class AsyncKafkaConsumerWithState:
+class AsyncKafkaConsumer:
     def __init__(self, bootstrap_servers, group_id, topic):
         self.bootstrap_servers = bootstrap_servers
         self.group_id = group_id
@@ -66,7 +66,7 @@ async def main():
     kafka_config = read_config.kakfa_config
     print(kafka_config['bootstrap_servers'])
     #producer = AsyncKafkaProducerWithState(kafka_config['bootstrap_servers'], kafka_config['topic'])
-    consumer = AsyncKafkaConsumerWithState(kafka_config['bootstrap_servers'], kafka_config['group_id'], kafka_config['topic'])
+    consumer = AsyncKafkaConsumer(kafka_config['bootstrap_servers'], kafka_config['group_id'], kafka_config['topic'])
     #msg_id=0
     await consumer.consume_messages()
     #while True:

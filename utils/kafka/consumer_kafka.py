@@ -1,29 +1,46 @@
-import time
-from kafka.consumer import KafkaConsumer
+import asyncio
 import json
+import time
+from aiokafka import AIOKafkaProducer, AIOKafkaConsumer
 from utils.ReadConfig import ReadConfig as rc
 
-
-class Consumer():
-    def __init__(self, bootstrapserver, topic,group_id):
-        self.bootstrap_server = bootstrapserver
-        self.topic = topic
+class AsyncKafkaConsumer:
+    def __init__(self, bootstrap_servers, group_id, topic):
+        self.bootstrap_servers = bootstrap_servers
         self.group_id = group_id
-        self.consumer = KafkaConsumer(self.topic, bootstrap_servers=self.bootstrap_server,auto_offset_reset = 'earliest',group_id=self.group_id)
+        self.topic = topic
+        self.consumer = AIOKafkaConsumer(
+            self.topic,
+            bootstrap_servers=bootstrap_servers,
+            group_id=group_id,
+            auto_offset_reset='earliest',  # You can change this to 'latest' if you want to start from the latest offset
+            enable_auto_commit=True,
+        )
+        self.state = {}
 
+    async def consume_messages(self):
+        await self.consumer.start()
 
-def main():
+        # Consume messages
+        try:
+            async for msg in self.consumer:
+                # Process the received message
+                #print('Received message: {}'.format(msg.value.decode('utf-8')))
+                print(msg.value.decode('utf-8'))
+
+                # Update state (for example, track the last consumed message offset)
+                self.state[msg.partition] = msg.offset
+        finally:
+            await self.consumer.stop()
+async def main():
     read_config = rc('/Users/krishnareddy/PycharmProjects/kobraCld/config/config.json')
     kafka_config = read_config.kakfa_config
     print(kafka_config['bootstrap_servers'])
-    consumer = Consumer(kafka_config['bootstrap_servers'], kafka_config['topic'],kafka_config['group_id'])
-    #consumer=KafkaConsumer(kafka_config['topic'],bootstrap_servers=kafka_config['bootstrap_servers'])
-    #consumer.subscribe(kafka_config['topic'])
-    while True:
-        for message in consumer.consumer:
-            #message =  value_deserializer=lambda x: json.loads(x.decode('utf-8')
-            print(message.value.decode('utf-8'))
+    #producer = AsyncKafkaProducerWithState(kafka_config['bootstrap_servers'], kafka_config['topic'])
+    consumer = AsyncKafkaConsumer(kafka_config['bootstrap_servers'], kafka_config['group_id'], kafka_config['topic'])
+    #msg_id=0
+    await consumer.consume_messages()
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
