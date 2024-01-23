@@ -7,6 +7,7 @@ import multiprocessing
 from utils.kafka.producer_kafka import Producer
 from utils.kafka.consumer_kafka import Consumer
 from logpkg.log_kcld import LogKCld,log_to_file
+import subprocess
 from utils.os.OsCommandExecution import OsCommandExecution
 import json
 import os
@@ -42,7 +43,19 @@ def main():
             msg_json=json.loads(msg.value.decode('utf-8'))
             print(f"this is the message from async {msg_json}")
             print(f"command is {msg_json['get_cpu_info']}")
-            result=os.cpu_count()
+            #command=msg_json['get_cpu_info']
+            #command="ls"
+            #result=os.cpu_count()
+            result={}
+            result['hostname'] = os.uname()
+            try:
+                # Execute the OS command
+                result['cpu_count']=os.cpu_count()
+                result['Total_memory']=os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES")
+                #result = subprocess.run(command, shell=True, check=True, capture_output=True)
+                #print('Command executed successfully. Output:', result.stdout.decode('utf-8'))
+            except subprocess.CalledProcessError as e:
+                print('Error executing command:', e)
             print(f"Command output is {result}")
             if stop_event.is_set():
                 break
