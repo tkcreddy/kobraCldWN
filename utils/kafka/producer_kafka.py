@@ -1,55 +1,65 @@
 import logging
 import time
-from logpkg.log_kcld import log_to_file
+from logpkg.log_kcld import LogKCld, log_to_file
 from kafka.producer import KafkaProducer
-from kafka.consumer import KafkaConsumer
 import json
 from faker import Faker
 from utils.ReadConfig import ReadConfig as rc
-fake=Faker()
+
+fake = Faker()
+logger = LogKCld()
+
 
 def get_faker_data():
-    return { "name": fake.name(),
-             "address": fake.address(),
-             "by":fake.year()}
+    return {"name": fake.name(),
+            "address": fake.address(),
+            "by": fake.year()}
 
+
+@log_to_file(logger)
 def json_serializer(data):
     return json.dumps(data).encode("utf-8")
 
+
 class Producer:
-    @l
-    def __init__(self,bootstrapserver,topic):
-        self.bootstrap_servers=[bootstrapserver]
-        #KafkaProducer()
-        self.topic=topic
+    @log_to_file(logger)
+    def __init__(self, bootstrapserver, topic):
+        self.bootstrap_servers = [bootstrapserver]
+        self.topic = topic
         try:
-           self.producer=KafkaProducer(bootstrap_servers=self.bootstrap_servers)
+            self.producer = KafkaProducer(bootstrap_servers=self.bootstrap_servers)
         except Exception as err:
-            logging.ERROR("")
+            logging.error(f"Exception in {err}")
+            raise
+
+    @log_to_file(logger)
+    def send(self, data):
+        try:
+            self.producer.send(self.topic,json_serializer(data))
+        except Exception as err:
+            logging.error(f"Exception in {err}")
+            raise
+
+    @log_to_file(logger)
+    def flush(self):
+        try:
+            self.producer.flush()
+        except Exception as err:
+            logging.error(f"Exception in {err}")
             raise
 
 
-    def send(self,data):
-        self.producer.send(self.topic,data)
-
-    def flush(self):
-        self.producer.flush()
-
 def main():
-
     read_config = rc('/Users/krishnareddy/PycharmProjects/kobraCld/config/config.json')
     kafka_config = read_config.kakfa_config
     print(kafka_config['bootstrap_servers'])
-    producer=Producer(kafka_config['bootstrap_servers'],kafka_config['topic'])
+    producer = Producer(kafka_config['bootstrap_servers'], kafka_config['topic'])
     while True:
         data = get_faker_data()
         print(data)
-        producer.send(json_serializer(data))
+        producer.send(data)
         producer.flush()
         time.sleep(3)
-
-
-
 
 
 if __name__ == "__main__":

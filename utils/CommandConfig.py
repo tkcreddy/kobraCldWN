@@ -1,7 +1,7 @@
 import json
 #from logpkg.log_decorator import setup_logger,log_to_file
 #logger = setup_logger("my_app", log_file="app.log")
-class ReadConfig:
+class CommandConfig:
     def __init__(self, file_path):
         # if file_path is None:
         #     file_path = "../../config/config.json"
@@ -14,16 +14,10 @@ class ReadConfig:
             self._config_data = json.load(file)
 
     @property
-    def logging_config(self):
-        return self._config_data['logging']
+    def system_config_info(self):
+        return self._config_data['system_configuration']
 
-    @property
-    def kakfa_config(self):
-        return self._config_data['kafka']
 
-    @property
-    def encryption_config(self):
-        return self._config_data['encryption']
 # if __name__ == "__main__":
 #     config_path = "../config/config.json"
 #     read_config = ReadConfig(config_path)
