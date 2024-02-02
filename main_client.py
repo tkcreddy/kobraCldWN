@@ -7,8 +7,10 @@ import multiprocessing
 from utils.kafka.producer_kafka import Producer
 from utils.kafka.consumer_kafka import Consumer
 from logpkg.log_kcld import LogKCld,log_to_file
+from modules.msg_processing.MsgProcess import MsgProcess
+import asyncio
 import subprocess
-from utils.os.OsCommandExecution import OsCommandExecution
+from utils.os.OsSystemCmd import OsCommandExecution
 import json
 import os
 
@@ -33,30 +35,35 @@ def main():
 
 
     consumer = Consumer(kafka_config['bootstrap_servers'], kafka_config['group_id'], kafka_config['topic'])
-    #print(system_config_info)
-    #producer.send(system_config_info)
     msg_json=''
 
     consumer.consumer.subscribe(kafka_config['topic'])
     while not stop_event.is_set():
         for msg in consumer.consumer:
-            msg_json=json.loads(msg.value.decode('utf-8'))
-            print(f"this is the message from async {msg_json}")
-            print(f"command is {msg_json['get_cpu_info']}")
-            #command=msg_json['get_cpu_info']
-            #command="ls"
-            #result=os.cpu_count()
-            result={}
-            result['hostname'] = os.uname()
-            try:
-                # Execute the OS command
-                result['cpu_count']=os.cpu_count()
-                result['Total_memory']=os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES")
-                #result = subprocess.run(command, shell=True, check=True, capture_output=True)
-                #print('Command executed successfully. Output:', result.stdout.decode('utf-8'))
-            except subprocess.CalledProcessError as e:
-                print('Error executing command:', e)
-            print(f"Command output is {result}")
+            msg_data=json.loads(msg.value.decode('utf-8'))
+            #print(f"Data is in the consumer {msg_data}")
+            process=MsgProcess(json.dumps(msg_data))
+            msg_op= process.msg_process()
+            #msg_json=json.loads(msg.value.decode('utf-8'))
+            print(f"out put to the result {msg_op}")
+
+
+            # print(f"this is the message from async {msg_json}")
+            # print(f"command is {msg_json['get_cpu_info']}")
+            # #command=msg_json['get_cpu_info']
+            # #command="ls"
+            # #result=os.cpu_count()
+            # result={}
+            # result['hostname'] = os.uname()
+            # try:
+            #     # Execute the OS command
+            #     result['cpu_count']=os.cpu_count()
+            #     result['Total_memory']=os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES")
+            #     #result = subprocess.run(command, shell=True, check=True, capture_output=True)
+            #     #print('Command executed successfully. Output:', result.stdout.decode('utf-8'))
+            # except subprocess.CalledProcessError as e:
+            #     print('Error executing command:', e)
+            # print(f"Command output is {result}")
             if stop_event.is_set():
                 break
     consumer.consumer.close()

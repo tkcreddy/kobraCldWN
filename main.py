@@ -32,7 +32,9 @@ async def main():
     # This is consumer that  receives the command output from the client.
     #consumer = AsyncKafkaConsumer(kafka_config['bootstrap_servers'], kafka_config['group_id'], kafka_config['command_output_topic'])
     #print(system_config_info)
-    producer.send(system_config_info)
+    data={"get_cpu_info": system_config_info['get_cpu_info']}
+    #producer.send(system_config_info['get_cpu_info'])
+    producer.send(data)
     #await consumer.consume_messages()
 
 

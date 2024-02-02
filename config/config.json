@@ -4,7 +4,7 @@
         "file_path": "/var/log/kcld.log"
     },
   "kafka": {
-  "bootstrap_servers": "krishnas-mbp.lan:9092",
+  "bootstrap_servers": "Krishnas-MacBook-Pro.local:9092",
   "group_id": "your_consumer_group_id",
   "topic": "your_kafka_topic",
   "command_output_topic": "command_output_topic"

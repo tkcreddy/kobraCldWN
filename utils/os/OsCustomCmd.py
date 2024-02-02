@@ -3,7 +3,7 @@ import os
 from logpkg.log_kcld import LogKCld,log_to_file
 logger=LogKCld()
 
-class OsCommandExecution:
+class OsCustomCmd:
 
     def __init__(self):
         return
