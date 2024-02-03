@@ -15,7 +15,7 @@ def print_hi(name) -> None:
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
 
-
+@log_to_file(logger)
 async def main():
     from utils.ReadConfig import ReadConfig as rc
     from utils.CommandConfig import CommandConfig as cc

@@ -1,7 +1,9 @@
 import multiprocessing
 from logpkg.log_kcld import LogKCld,log_to_file
 import subprocess
-from utils.os import OsSystemCmd,OsCustomCmd
+from utils.os.OsSystemCmd import OsSystemCmd
+from utils.os.OsMetricsCmd import OsMetricsCmd
+from utils.os.OsCustomCmd import OsCustomCmd
 import json
 import jsonpickle
 import os
@@ -23,13 +25,14 @@ class MsgProcess():
             if first_key == "OS_System_Cmd":
                 OsSystemCmd(msg_json[first_key])
             elif first_key == "OS_Metrics_Cmd":
-                action2(json_data[first_key])
+                OsMetricsCmd(msg_json[first_key])
             elif first_key == "OS_Custom_cmd":
-                action
+                OsMetricsCmd(msg_json[first_key])
 
             elif first_key == "Container_Cmd":
                 action3(json_data[first_key])
             else:
+                print(f"passing in {__name__}")
                 pass
         else:
             print("Error: Empty JSON data")
@@ -42,7 +45,7 @@ class MsgProcess():
         try:
             # Execute the OS command
             result['cpu_count'] = os.cpu_count()
-            result['Total_memory'] = os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES")
+            result['Total_memory'] = os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES")/(1024*1024*1024)
             # result = subprocess.run(command, shell=True, check=True, capture_output=True)
             # print('Command executed successfully. Output:', result.stdout.decode('utf-8'))
         except subprocess.CalledProcessError as e:

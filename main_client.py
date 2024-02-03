@@ -10,7 +10,7 @@ from logpkg.log_kcld import LogKCld,log_to_file
 from modules.msg_processing.MsgProcess import MsgProcess
 import asyncio
 import subprocess
-from utils.os.OsSystemCmd import OsCommandExecution
+
 import json
 import os
 
@@ -18,55 +18,39 @@ import os
 stop_event = multiprocessing.Event()
 logger=LogKCld()
 
-#logger = setup_logger("my_app", log_file="app.log")
-#from utils.kafka.producer_kafka import *
-#from utils.kafka.
+
 @log_to_file(logger)
 def print_hi(name) -> None:
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
 
-
+@log_to_file(logger)
 def main():
     from utils.ReadConfig import ReadConfig as rc
     from utils.CommandConfig import CommandConfig as cc
     read_config = rc('/Users/krishnareddy/PycharmProjects/kobraCld/config/config.json')
     kafka_config = read_config.kakfa_config
 
+    try:
+        consumer = Consumer(kafka_config['bootstrap_servers'], kafka_config['group_id'], kafka_config['topic'])
+        msg_json=''
+        print(f"successfully connected to consumer")
+        consumer.consumer.subscribe(kafka_config['topic'])
+        while not stop_event.is_set():
+            for msg in consumer.consumer:
+                msg_data = json.loads(msg.value.decode('utf-8'))
+                print(f"Data is in the consumer {msg_data}")
+                process = MsgProcess(json.dumps(msg_data))
+                msg_op = process.msg_process()
+                # msg_json=json.loads(msg.value.decode('utf-8'))
+                print(f"out put to the result {msg_op}")
+                if stop_event.is_set():
+                    break
+    except Exception as e:
+        print(f"error in connecting to consumer with error {e}")
 
-    consumer = Consumer(kafka_config['bootstrap_servers'], kafka_config['group_id'], kafka_config['topic'])
-    msg_json=''
-
-    consumer.consumer.subscribe(kafka_config['topic'])
-    while not stop_event.is_set():
-        for msg in consumer.consumer:
-            msg_data=json.loads(msg.value.decode('utf-8'))
-            #print(f"Data is in the consumer {msg_data}")
-            process=MsgProcess(json.dumps(msg_data))
-            msg_op= process.msg_process()
-            #msg_json=json.loads(msg.value.decode('utf-8'))
-            print(f"out put to the result {msg_op}")
-
-
-            # print(f"this is the message from async {msg_json}")
-            # print(f"command is {msg_json['get_cpu_info']}")
-            # #command=msg_json['get_cpu_info']
-            # #command="ls"
-            # #result=os.cpu_count()
-            # result={}
-            # result['hostname'] = os.uname()
-            # try:
-            #     # Execute the OS command
-            #     result['cpu_count']=os.cpu_count()
-            #     result['Total_memory']=os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES")
-            #     #result = subprocess.run(command, shell=True, check=True, capture_output=True)
-            #     #print('Command executed successfully. Output:', result.stdout.decode('utf-8'))
-            # except subprocess.CalledProcessError as e:
-            #     print('Error executing command:', e)
-            # print(f"Command output is {result}")
-            if stop_event.is_set():
-                break
-    consumer.consumer.close()
+    finally:
+        consumer.consumer.close()
 
     producer = Producer(kafka_config['bootstrap_servers'], kafka_config['command_output_topic'])
 

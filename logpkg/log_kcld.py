@@ -1,7 +1,10 @@
 import logging
 import functools
 from utils.ReadConfig import ReadConfig as rc
-class LogKCld(object):
+from utils.singleton import Singleton
+
+class _LogKCld(object):
+
 
     read_config = rc('/Users/krishnareddy/PycharmProjects/kobraCld/config/config.json')
     logging_config = read_config.logging_config
@@ -24,7 +27,7 @@ class LogKCld(object):
             self.file_handler = logging.FileHandler(log_file)
             self.file_handler.setFormatter(self.formatter)
             self.logger.addHandler(self.file_handler)
-
+        print(f"initialized once")
         #return logger
     def info(self, msg, extra=None):
         self.logger.info(msg, extra=extra)
@@ -51,7 +54,7 @@ def log_to_file(logger):
                 result = func(*args, **kwargs)
 
                 # Log the return value
-                logger.info(f"Function returned: {result}")
+                logger.info(f"Function returned: {func.__name__} {result}")
 
                 return result
             except Exception as e:
@@ -62,6 +65,8 @@ def log_to_file(logger):
         return wrapper
     return decorator
 
+class LogKCld(_LogKCld,metaclass=Singleton):
+    pass
 #Example usage
 # if __name__ == "__main__":
 #

@@ -5,11 +5,11 @@ logger=LogKCld()
 
 class OsCustomCmd:
 
-    def __init__(self):
-        return
+    def __init__(self,cmd):
+        self.cmd=cmd
 
-    @staticmethod
-    def command_execute(self, command):
+
+    def command_execute(self):
         count=os.cpu_count()
-        data=os.system(command)
+        data=os.system(self.cmd)
         return data

@@ -47,19 +47,19 @@ class Consumer:
         return msg_json
 
 
-def main():
-    read_config = rc('/Users/krishnareddy/PycharmProjects/kobraCld/config/config.json')
-    kafka_config = read_config.kakfa_config
-    print(kafka_config['bootstrap_servers'])
-    consumer = Consumer(kafka_config['bootstrap_servers'], kafka_config['topic'],kafka_config['group_id'])
-    consumer.consumer.subscribe(kafka_config['topic'])
-    #consumer.subscribe(['coba'])
-    while not stop_event.is_set():
-        for msg in consumer.consumer:
-            print(f'data is {msg.value.decode('utf-8')}')
-            if stop_event.is_set():
-                break
-    consumer.consumer.close()
-
-if __name__ == "__main__":
-    main()
+# def main():
+#     read_config = rc('/Users/krishnareddy/PycharmProjects/kobraCld/config/config.json')
+#     kafka_config = read_config.kakfa_config
+#     print(kafka_config['bootstrap_servers'])
+#     consumer = Consumer(kafka_config['bootstrap_servers'], kafka_config['topic'],kafka_config['group_id'])
+#     consumer.consumer.subscribe(kafka_config['topic'])
+#     #consumer.subscribe(['coba'])
+#     while not stop_event.is_set():
+#         for msg in consumer.consumer:
+#             print(f'data is {msg.value.decode('utf-8')}')
+#             if stop_event.is_set():
+#                 break
+#     consumer.consumer.close()
+#
+# if __name__ == "__main__":
+#     main()
