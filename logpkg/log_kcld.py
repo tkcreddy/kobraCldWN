@@ -4,8 +4,6 @@ from utils.ReadConfig import ReadConfig as rc
 from utils.singleton import Singleton
 
 class _LogKCld(object):
-
-
     read_config = rc('/Users/krishnareddy/PycharmProjects/kobraCld/config/config.json')
     logging_config = read_config.logging_config
     #name="my_app"
@@ -27,8 +25,7 @@ class _LogKCld(object):
             self.file_handler = logging.FileHandler(log_file)
             self.file_handler.setFormatter(self.formatter)
             self.logger.addHandler(self.file_handler)
-        print(f"initialized once")
-        #return logger
+        print(f"initializing Logger once")
     def info(self, msg, extra=None):
         self.logger.info(msg, extra=extra)
 
@@ -47,7 +44,7 @@ def log_to_file(logger):
         def wrapper(*args, **kwargs):
             try:
                 # Log function call details
-                logger.info(f"Calling function: {func.__name__}")
+                logger.info(f"Calling Class & function: {func.__name__}")
                 logger.info(f"Arguments: {args}, {kwargs}")
 
                 # Execute the original function
@@ -67,18 +64,4 @@ def log_to_file(logger):
 
 class LogKCld(_LogKCld,metaclass=Singleton):
     pass
-#Example usage
-# if __name__ == "__main__":
-#
-#     # Set up a logger named "my_app"
-#     logger = LogKCld()
-#     #logger = setup_logger("my_app", log_file="../app.log")
-#
-#     # Apply the logpkg decorator to a function
-#     @log_to_file(logger)
-#     def add_numbers(a, b):
-#         return a + b
-#
-#     # Call the decorated function
-#     result = add_numbers(3, 5)
-#     logger.info(f"Final result: {result}")
+

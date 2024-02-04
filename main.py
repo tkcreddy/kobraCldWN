@@ -16,13 +16,13 @@ def print_hi(name) -> None:
     print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
 
 @log_to_file(logger)
-async def main():
+async def main() ->None:
     from utils.ReadConfig import ReadConfig as rc
-    from utils.CommandConfig import CommandConfig as cc
-    read_config = rc('/Users/krishnareddy/PycharmProjects/kobraCld/config/config.json')
+    from utils.server_side.SsOsSystemCmd import SsOsSystemCmd as ss
+    read_config = rc()
     kafka_config = read_config.kakfa_config
-    command_config=cc('/Users/krishnareddy/PycharmProjects/kobraCld/config/commands.json')
-    system_config_info=command_config.system_config_info
+    #os_system_cmd=command_config.os_system_cmd
+    os_system_cmd=ss()
     #print(kafka_config['bootstrap_servers'])
 
     # This is producer from server side sending  the  client to run a  command and return the results
@@ -32,8 +32,7 @@ async def main():
     # This is consumer that  receives the command output from the client.
     #consumer = AsyncKafkaConsumer(kafka_config['bootstrap_servers'], kafka_config['group_id'], kafka_config['command_output_topic'])
     #print(system_config_info)
-    data={"get_cpu_info": system_config_info['get_cpu_info']}
-    #producer.send(system_config_info['get_cpu_info'])
+    data=os_system_cmd.get_cpu_info()
     producer.send(data)
     #await consumer.consume_messages()
 

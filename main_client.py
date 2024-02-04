@@ -28,26 +28,27 @@ def print_hi(name) -> None:
 def main():
     from utils.ReadConfig import ReadConfig as rc
     from utils.CommandConfig import CommandConfig as cc
-    read_config = rc('/Users/krishnareddy/PycharmProjects/kobraCld/config/config.json')
+    read_config = rc()
     kafka_config = read_config.kakfa_config
 
     try:
         consumer = Consumer(kafka_config['bootstrap_servers'], kafka_config['group_id'], kafka_config['topic'])
         msg_json=''
-        print(f"successfully connected to consumer")
+        logger.info(f"successfully connected to consumer")
         consumer.consumer.subscribe(kafka_config['topic'])
         while not stop_event.is_set():
             for msg in consumer.consumer:
                 msg_data = json.loads(msg.value.decode('utf-8'))
-                print(f"Data is in the consumer {msg_data}")
+                logger.info(f"Data is in the consumer {msg_data}")
                 process = MsgProcess(json.dumps(msg_data))
                 msg_op = process.msg_process()
                 # msg_json=json.loads(msg.value.decode('utf-8'))
-                print(f"out put to the result {msg_op}")
+                logger.info(f"out put to the result {msg_op}")
                 if stop_event.is_set():
                     break
     except Exception as e:
         print(f"error in connecting to consumer with error {e}")
+        pass
 
     finally:
         consumer.consumer.close()
