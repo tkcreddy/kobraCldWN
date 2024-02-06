@@ -8,15 +8,13 @@ from utils.kafka.producer_kafka import Producer
 from utils.kafka.consumer_kafka import Consumer
 from logpkg.log_kcld import LogKCld,log_to_file
 from modules.msg_processing.MsgProcessGateway import MsgProcess
-import argparse
 import json
+from utils.ReadConfig import ReadConfig as rc
+import argparse
 import asyncio
 import subprocess
 import os
 
-parser = argparse.ArgumentParser(description='A Python CLI application')
-parser.add_argument('--config directory', type=str, help='Please provide the Config Directory Location', default="/etc/kobraCld")
-args = parser.parse_args()
 
 
 
@@ -31,9 +29,10 @@ def print_hi(name) -> None:
 
 @log_to_file(logger)
 def main():
-    from utils.ReadConfig import ReadConfig as rc
-    from utils.CommandConfig import CommandConfig as cc
-    read_config = rc()
+    parser = argparse.ArgumentParser(description='A Python CLI application')
+    parser.add_argument('--configDir', type=str, help='Please specify ConfigDir')
+    args = parser.parse_args()
+    read_config = rc(args.configDir)
     kafka_config = read_config.kakfa_config
 
     try:

@@ -1,14 +1,15 @@
 import json
+from utils.ReadConfig import ReadConfig as rc
 from utils.singleton import Singleton
 import os
-#from logpkg.log_decorator import setup_logger,log_to_file
-#logger = setup_logger("my_app", log_file="app.log")
+
 class _CommandConfig:
-    #file_path='/Users/krishnareddy/PycharmProjects/kobraCldWN/config/commands.json'
-    def __init__(self, base_dir='config/'):
+
+    def __init__(self):
         # if file_path is None:
         #     file_path = "../../config/config.json"
-        self.base_dir=base_dir
+        read_confg = rc()
+        self.base_dir=read_confg.set_config_dir
         self.file_path = os.path.join(self.base_dir, 'commands.json')
         #self.file_path = file_path
         self._config_data = None

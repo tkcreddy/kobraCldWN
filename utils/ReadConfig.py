@@ -4,19 +4,19 @@ import os
 #from logpkg.log_decorator import setup_logger,log_to_file
 #logger = setup_logger("my_app", log_file="app.log")
 class _ReadConfig:
-    #file_path='/Users/krishnareddy/PycharmProjects/kobraCldWN/config/config.json'
-    # BASE_DIR='config/'
-    # print(f"Base Dir is {BASE_DIR}")
-    # file_path=os.path.join(BASE_DIR, 'config.json')
-    # print(f"file path is {file_path}")
-    def __init__(self,base_dir='config/'):
-        #BASE_DIR = 'config/'
-        self.base_dir=base_dir
+
+    def __init__(self,base_dir=None):
+        if base_dir != None:
+            self.base_dir=base_dir
+        else:
+            self.base_dir='config/'
         self.file_path = os.path.join(self.base_dir, 'config.json')
         self._config_data = None
         self.load_config()
         print(f"Initializing ReadConfig once {self.file_path}")
-
+    @property
+    def set_config_dir(self):
+        return self.base_dir
     def load_config(self):
         try:
             with open(self.file_path, 'r') as file:
