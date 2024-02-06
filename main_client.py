@@ -7,12 +7,17 @@ import multiprocessing
 from utils.kafka.producer_kafka import Producer
 from utils.kafka.consumer_kafka import Consumer
 from logpkg.log_kcld import LogKCld,log_to_file
-from modules.msg_processing.MsgProcess import MsgProcess
+from modules.msg_processing.MsgProcessGateway import MsgProcess
+import argparse
+import json
 import asyncio
 import subprocess
-
-import json
 import os
+
+parser = argparse.ArgumentParser(description='A Python CLI application')
+parser.add_argument('--config directory', type=str, help='Please provide the Config Directory Location', default="/etc/kobraCld")
+args = parser.parse_args()
+
 
 
 stop_event = multiprocessing.Event()
