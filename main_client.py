@@ -26,10 +26,11 @@ def main():
     parser.add_argument('--configDir', type=str, help='Please specify ConfigDir')
     args = parser.parse_args()
     read_config = rc(args.configDir)
-    kafka_config = read_config.kakfa_config
+    kafka_config = read_config.kafka_config
+    kafka_ssl_info = read_config.kafka_ssl
 
     try:
-        consumer = Consumer(kafka_config['bootstrap_servers'], kafka_config['group_id'], kafka_config['topic'])
+        consumer = Consumer(kafka_config['bootstrap_servers'], kafka_config['group_id'], kafka_config['topic'],**kafka_ssl_info)
         msg_json=''
         logger.info(f"successfully connected to consumer")
         consumer.consumer.subscribe(kafka_config['topic'])
@@ -44,6 +45,7 @@ def main():
                 if stop_event.is_set():
                     break
     except Exception as e:
+        logger.error(f"error in connecting to consumer with error {e}")
         print(f"error in connecting to consumer with error {e}")
         pass
 
