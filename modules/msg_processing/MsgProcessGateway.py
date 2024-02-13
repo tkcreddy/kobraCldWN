@@ -11,7 +11,10 @@ import asyncio
 logger=LogKCld()
 
 class MsgProcess():
-    def __init__(self,msg:json):
+    def __init__(self,msg:json)->None:
+        """
+        :param msg: A JSON object containing the message data.
+        """
         self.msg=msg
     @log_to_file(logger)
     def msg_process(self)->json:

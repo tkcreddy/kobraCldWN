@@ -14,12 +14,29 @@ stop_event = multiprocessing.Event()
 
 @log_to_file(logger)
 def json_serializer(data):
+    """
+    :param data: Python object to be serialized into JSON string.
+    :return: Encoded JSON string.
+
+    """
     return json.dumps(data).encode("utf-8")
 
 
 class Consumer:
     @log_to_file(logger)
-    def __init__(self, bootstrapserver, topic, group_id,**kwargs):
+    def __init__(self, bootstrapserver, topic, group_id,**kwargs)->None:
+        """
+        Initialize the KafkaConsumer object.
+
+        :param bootstrapserver: The bootstrap server address.
+        :type bootstrapserver: str
+        :param topic: The topic name.
+        :type topic: str
+        :param group_id: The consumer group id.
+        :type group_id: str
+        :param kwargs: Additional keyword arguments for KafkaConsumer.
+        :type kwargs: dict
+        """
         self.bootstrap_servers = [bootstrapserver]
         self.topic = topic
         self.group_id = group_id
@@ -29,7 +46,12 @@ class Consumer:
         except Exception as err:
             logging.error(f"Exception in {err}")
             raise
-    def consume_messages(self):
+    def consume_messages(self)->any:
+        """
+        Consume messages from the consumer.
+
+        :return: The consumed message in JSON format.
+        """
         self.consumer.subscribe()
         msg_json=''
         # Consume messages

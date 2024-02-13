@@ -4,8 +4,4 @@ aiohttp
 aiokafka
 requests
 kafka-python
-#kafka
-faker
-#faker-to-kafka
-httpx
-jsonpickle
+docker

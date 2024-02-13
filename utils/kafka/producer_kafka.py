@@ -18,23 +18,45 @@ def get_faker_data():
 
 @log_to_file(logger)
 def json_serializer(data):
+    """
+    :param data: The data to be serialized into a JSON formatted string.
+    :return: The JSON formatted string representation of the data.
+    """
     return json.dumps(data).encode("utf-8")
 
 
 class Producer:
 
     @log_to_file(logger)
-    def __init__(self, bootstrapserver, topic):
+    def __init__(self, bootstrapserver, topic,**kwargs)->None:
+        """
+        Constructor method for initializing the object.
+
+        :param bootstrapserver: The address of the bootstrap server.
+        :type bootstrapserver: str
+        :param topic: The name of the Kafka topic.
+        :type topic: str
+        :param kwargs: Additional keyword arguments to be passed to KafkaProducer.
+        :type kwargs: dict
+
+        :raises Exception: Exception is raised if an error occurs during initialization.
+        """
         self.bootstrap_servers = [bootstrapserver]
         self.topic = topic
         try:
-            self.producer = KafkaProducer(bootstrap_servers=self.bootstrap_servers)
+            self.producer = KafkaProducer(bootstrap_servers=self.bootstrap_servers,**kwargs)
         except Exception as err:
             logging.error(f"Exception in {err}")
             raise
 
     @log_to_file(logger)
-    def send(self, data):
+    def send(self, data)->any:
+        """
+        Sends the given data to the Kafka topic.
+
+        :param data: The data to be sent.
+        :type data: Any
+        """
         try:
             self.producer.send(self.topic,json_serializer(data))
             print(f"sending data {data}")
@@ -43,7 +65,12 @@ class Producer:
             raise
 
     @log_to_file(logger)
-    def flush(self):
+    def flush(self)->None:
+        """
+        Flushes the producer.
+
+        :return: None
+        """
         try:
             self.producer.flush()
         except Exception as err:
@@ -51,19 +78,3 @@ class Producer:
             raise
 
 
-
-# def main():
-#     read_config = rc('/Users/krishnareddy/PycharmProjects/kobraCld/config/config.json')
-#     kafka_config = read_config.kakfa_config
-#     print(kafka_config['bootstrap_servers'])
-#     producer = Producer(kafka_config['bootstrap_servers'], kafka_config['topic'])
-#     while True:
-#         data = get_faker_data()
-#         print(data)
-#         producer.send(data)
-#         producer.flush()
-#         time.sleep(3)
-#
-#
-# if __name__ == "__main__":
-#     main()

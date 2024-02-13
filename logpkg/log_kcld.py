@@ -9,7 +9,18 @@ class _LogKCld(object):
     #name="my_app"
     log_file = logging_config['file_path']
     log_level = logging_config['level']
-    def __init__(self,name="kcld", log_file=log_file, level=log_level):
+    def __init__(self,name="kcld", log_file=log_file, level=log_level)->None:
+        """
+        Initializes a Logger object.
+
+        :param name: The name of the logger. Defaults to "kcld" if not provided.
+        :type name: str
+        :param log_file: The path to the log file. If provided, logs will be written to this file. Defaults to None.
+        :type log_file: str
+        :param level: The logging level. Defaults to None.
+        :type level: int
+
+        """
         self.logger = logging.getLogger(name)
         self.logger.setLevel(level)
 
@@ -26,19 +37,19 @@ class _LogKCld(object):
             self.file_handler.setFormatter(self.formatter)
             self.logger.addHandler(self.file_handler)
         print(f"initializing Logger once")
-    def info(self, msg, extra=None):
+    def info(self, msg, extra=None)->None:
         self.logger.info(msg, extra=extra)
 
-    def error(self, msg, extra=None):
+    def error(self, msg, extra=None)->None:
         self.logger.error(msg, extra=extra)
 
-    def debug(self, msg, extra=None):
+    def debug(self, msg, extra=None)->None:
         self.logger.debug(msg, extra=extra)
 
-    def warn(self, msg, extra=None):
+    def warn(self, msg, extra=None)->None:
         self.logger.warn(msg, extra=extra)
 
-def log_to_file(logger):
+def log_to_file(logger)->any:
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
